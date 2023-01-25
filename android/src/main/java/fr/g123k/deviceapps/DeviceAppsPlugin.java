@@ -184,7 +184,7 @@ public class DeviceAppsPlugin implements
 
     private void getInstalledApps(boolean includeSystemApps, boolean includeAppIcons, boolean onlyAppsWithLaunchIntent, OnAppLoaded callback) {
         if (context == null) {	     
-               if (context == null) {
+             
             Log.e(LOG_TAG, "Context is null");	
             return;           
         }	        
@@ -211,7 +211,7 @@ public class DeviceAppsPlugin implements
 
 
                    callback.onAppAvailable(map);
-        }
+        
     }	    
 
     private boolean openApp(@NonNull String packageName) {
