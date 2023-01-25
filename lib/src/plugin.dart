@@ -62,6 +62,30 @@ class DeviceApps {
     }
   }
 
+  static Stream<Application> streamInstalledApplications({
+    bool includeSystemApps: false,
+    bool includeAppIcons: false,
+    bool onlyAppsWithLaunchIntent: false,
+  }) {
+    final Stream<dynamic> apps = _eventChannel.receiveBroadcastStream(
+      <String, dynamic>{
+        'system_apps': includeSystemApps,
+        'include_app_icons': includeAppIcons,
+        'only_apps_with_launch_intent': onlyAppsWithLaunchIntent,
+        'event': 'getInstalledApps',
+      },
+    );
+
+    return apps.map<Application>((dynamic app) => Application._(app));
+  }
+
+  static Future<int> getInstalledPackagesCount() {
+    return _methodChannel
+        .invokeMethod<int>('getInstalledPackagesCount')
+        .then((int? value) => value ?? 0)
+        .catchError((dynamic err) => 0);
+  }
+
   /// Provide all information for a given app by its [packageName]
   /// [includeAppIcon] will also include the icon for the app.
   /// To get it, you have to cast the object to [ApplicationWithIcon].
@@ -162,9 +186,18 @@ class DeviceApps {
   /// Listen to app changes: installations, uninstallations, updates, enabled or
   /// disabled. As it is a [Stream], don't hesite to filter data if the content
   /// is too verbose for you
-  static Stream<ApplicationEvent> listenToAppsChanges() {
+  /*static Stream<ApplicationEvent> listenToAppsChanges() {
     return _eventChannel
         .receiveBroadcastStream()
+        .map(((dynamic event) =>
+            ApplicationEvent._(event as Map<dynamic, dynamic>)))
+        .handleError((Object err) => null);
+  }*/
+  static Stream<ApplicationEvent> listenToAppsChanges() {
+    return _eventChannel
+        .receiveBroadcastStream(
+          <String, dynamic>{'event': 'listenToAppsChanges'},
+        )
         .map(((dynamic event) =>
             ApplicationEvent._(event as Map<dynamic, dynamic>)))
         .handleError((Object err) => null);
