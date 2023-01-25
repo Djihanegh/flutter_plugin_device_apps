@@ -207,10 +207,11 @@ public class DeviceAppsPlugin implements
                     packageInfo.applicationInfo,	              
                     includeAppIcons);	                 
             installedApps.add(map);	
+            callback.onAppAvailable(map);
         }	
 
 
-                   callback.onAppAvailable(map);
+               
         
     }	    
 
